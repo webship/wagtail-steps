@@ -21,6 +21,11 @@ The roles are Wagtail's own: a superuser, the Editors group (adds and changes pa
 and the Moderators group (also publishes, locks and unlocks pages, and reviews what is submitted). "none" is an
 account that may log in to nothing of the admin: no group, no permission, not staff. The groups are the ones Wagtail
 makes when it is installed (the demo loads its own copies of them), so the same accounts fit a new site and the demo.
+
+"accounts cancel" deletes the accounts of the list, except one that the site's own fixtures make (the demo's editor
+and moderator, which the default accounts take over): that one is given back as its fixture made it (its address, its
+names, its password, its group), so the pages, revisions and workflow of the demo keep their authors, and adding the
+default accounts again takes it over again.
 """
 
 import base64
@@ -142,6 +147,44 @@ def put_account(account):
     print(("Made" if created else "Put back") + f" {user.username} ({role}, {user.email})")
 
 
+def site_own_accounts():
+    """The accounts the site's own fixtures make, by user name: the demo's people (its editor and its moderator among
+    them), from <package>/base/fixtures/*.json. A site made with `wagtail start` has none."""
+    import glob
+
+    found = {}
+    for path in sorted(glob.glob(str(HERE / "*" / "fixtures" / "*.json")) + glob.glob(str(HERE / "*" / "*" / "fixtures" / "*.json"))):
+        try:
+            with open(path, encoding="utf-8") as handle:
+                rows = json.load(handle)
+        except (OSError, ValueError):
+            continue
+        for row in rows if isinstance(rows, list) else []:
+            fields = row.get("fields") if isinstance(row, dict) and row.get("model") == "auth.user" else None
+            if isinstance(fields, dict) and fields.get("username"):
+                found[fields["username"]] = fields
+    return found
+
+
+def give_back(user, fields):
+    """Put an account the site's fixture made back as the fixture made it: its address, names, state, password and
+    groups (by name, or by id). Its pages, revisions and workflow keep it as their author."""
+    from django.contrib.auth.models import Group
+    from django.db.models import Q
+
+    for name in ("email", "first_name", "last_name", "is_active", "is_staff", "is_superuser"):
+        if name in fields:
+            setattr(user, name, fields[name])
+    if fields.get("password"):
+        user.password = fields["password"]
+    user.save()
+    user.user_permissions.clear()
+    groups = fields.get("groups") or []
+    names = [g[0] for g in groups if isinstance(g, list) and g]
+    ids = [g for g in groups if isinstance(g, int)]
+    user.groups.set(Group.objects.filter(Q(name__in=names) | Q(pk__in=ids)))
+
+
 def accounts(verb):
     setup_django()
     from django.contrib.auth import get_user_model
@@ -157,9 +200,17 @@ def accounts(verb):
         for account in data.get("accounts", []):
             put_account(account)
     elif verb == "cancel":
+        own = site_own_accounts()
         for account in data.get("accounts", []):
-            deleted, _ = User.objects.filter(username=account["name"]).delete()
-            print(("Deleted " if deleted else "No account ") + account["name"])
+            user = User.objects.filter(username=account["name"]).first()
+            if user is None:
+                print("No account " + account["name"])
+            elif account["name"] in own:
+                give_back(user, own[account["name"]])
+                print(f"Gave back {user.username}: the site's own account, as its fixture made it")
+            else:
+                user.delete()
+                print("Deleted " + account["name"])
     elif verb == "list":
         for user in User.objects.order_by("username"):
             groups = ", ".join(user.groups.values_list("name", flat=True))
