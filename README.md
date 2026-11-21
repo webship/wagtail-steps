@@ -194,7 +194,7 @@ report it wrote:
 ```
 3 scenarios (3 passed)
 12 steps (12 passed)
-0m09.812s (executing steps: 0m09.774s)
+0m07.870s (executing steps: 0m07.827s)
 [webship-js] HTML report → …/wagtail-tests/tests/reports/cucumber_report.html
 ```
 

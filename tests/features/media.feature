@@ -24,9 +24,11 @@ Feature: The image and document libraries
     When I delete the image "Webship test loaf"
     Then the image library should not list "Webship test loaf"
 
-  Scenario: A document is uploaded, found by the library's search, and deleted
+  Scenario: A document is uploaded, found in the library and by its search, and deleted
     When I upload the document "webship-test-recipe.pdf" with the title "Webship test recipe"
-    And I search the document library for "Webship test"
+    And I go to the document library
+    Then the document library should list "Webship test recipe"
+    When I search the document library for "Webship test"
     Then the document library should list "Webship test recipe"
     And the document library should not list "Cookbook: Skillet Cornbread"
     When I delete the document "Webship test recipe"

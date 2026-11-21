@@ -10,8 +10,9 @@ Feature: Editing a page
 
   Scenario: A page is written with blocks, previewed, saved as a draft and published
     When I add a "Standard page" under the home page
-    And I set "Title" to "Webship test page"
-    And I set "Introduction" to "A page the suite writes."
+    And I set these fields:
+      | Title        | Webship test page        |
+      | Introduction | A page the suite writes. |
     Then "Slug" should be set to "webship-test-page"
     When I add a "Heading block" block to "Page body"
     And I set "Heading text" to "Our oven" in block 1 of "Page body"
