@@ -1,0 +1,69 @@
+{
+  "name": "@webship-js/wagtail-steps",
+  "version": "2.0.0",
+  "description": "Cucumber step definitions for Wagtail sites, a plugin for webship-js (Playwright and Cucumber): the admin login and the dashboard, the page explorer (the tree, search, a child page added), page editing (StreamField blocks added, moved and removed, the preview panel, save draft, publish, unpublish, schedule), revisions (compare, revert) and page locking, the moderation workflow (submit, approve, request changes with a comment), the image and document libraries (upload, focal point, collections), snippets, form submissions, users and groups, redirects and reports, and the front end of the site: its pages, its search and its forms.",
+  "main": "tests/step-definitions/wagtail-session.steps.js",
+  "files": [
+    "tests/step-definitions/",
+    "tests/features/",
+    "tests/fixtures/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "cucumber-js --config cucumber.js",
+    "test:dry": "cucumber-js --config cucumber.js --dry-run",
+    "test:examples": "node tests/check-examples.js",
+    "test:paths": "node tests/check-paths.js",
+    "test:must-fail": "node tests/check-must-fail.js",
+    "test:chromium": "BROWSER=chromium cucumber-js --config cucumber.js",
+    "test:firefox": "BROWSER=firefox cucumber-js --config cucumber.js",
+    "test:webkit": "BROWSER=webkit cucumber-js --config cucumber.js",
+    "test:headed": "HEADLESS=false cucumber-js --config cucumber.js",
+    "generate-reports": "generate-reports",
+    "test:fast": "SLOW_MO=0 cucumber-js --config cucumber.js"
+  },
+  "keywords": [
+    "webship-js",
+    "wagtail",
+    "django",
+    "python",
+    "cms",
+    "streamfield",
+    "workflow",
+    "moderation",
+    "cucumber",
+    "cucumber-js",
+    "playwright",
+    "bdd",
+    "testing",
+    "e2e",
+    "gherkin"
+  ],
+  "author": "Webship.co",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webship/wagtail-steps.git"
+  },
+  "bugs": {
+    "url": "https://github.com/webship/wagtail-steps/issues"
+  },
+  "homepage": "https://github.com/webship/wagtail-steps#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">= 20.0"
+  },
+  "peerDependencies": {
+    "webship-js": "^2.0.16"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.0",
+    "webship-js": "^2.0.16"
+  },
+  "overrides": {
+    "@cucumber/cucumber": "^12"
+  }
+}
