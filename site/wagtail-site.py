@@ -62,6 +62,10 @@ if os.environ.get("DATABASE_URL", "").startswith(("postgres://", "postgresql://"
             "CONN_MAX_AGE": 500,
         }
     }
+    # Wagtail's database search backend indexes with PostgreSQL's own indexes, which need Django's PostgreSQL app:
+    # the demo adds it to its settings by itself, a project made with `wagtail start` does not.
+    if "django.contrib.postgres" not in INSTALLED_APPS:  # noqa: F405
+        INSTALLED_APPS = [*INSTALLED_APPS, "django.contrib.postgres"]  # noqa: F405
 
 if os.environ.get("DJANGO_SECRET_KEY"):
     SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
