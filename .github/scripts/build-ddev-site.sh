@@ -169,9 +169,10 @@ manage collectstatic --noinput -v 0
 site_script site "$HOST"
 site_script accounts add
 
-# The server starts once the site is in place.
+# The server starts once the site is in place: the daemon of the web container has waited for .ready since the project
+# started, and starts uWSGI within two seconds of it. No restart here: one that lands while the daemon is starting the
+# server stops it half way, the next start finds the port still held, and supervisorctl answers "spawn error".
 ddev exec "touch ${ROOT}/.ready" < /dev/null
-ddev exec "supervisorctl restart webextradaemons:wagtail" < /dev/null
 code=""
 for attempt in $(seq 1 90); do
   code="$(ddev exec "curl -s -o /dev/null -w '%{http_code}' -H 'X-Forwarded-Proto: https' http://127.0.0.1:${PORT}/admin/login/" < /dev/null 2>/dev/null | tr -d '\r' || true)"
@@ -179,8 +180,9 @@ for attempt in $(seq 1 90); do
   sleep 2
 done
 if [ "$code" != "200" ]; then
-  echo "The site did not answer; the end of its server's log:" >&2
-  ddev exec "supervisorctl tail webextradaemons:wagtail stderr" < /dev/null >&2 || true
+  # The daemons of the web container write to the container's log, not to a log file of their own.
+  echo "The site did not answer; the end of the web container's log:" >&2
+  ddev logs -s web --tail 100 < /dev/null >&2 || true
   exit 1
 fi
 

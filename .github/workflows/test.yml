@@ -102,8 +102,9 @@ jobs:
       - name: Show the log of the site's server
         if: failure()
         run: |
+          # The daemons of the web container (uWSGI among them) write to the container's log.
           cd "$SITE_DIR"
-          ddev exec "supervisorctl tail -8000 webextradaemons:wagtail stderr" < /dev/null || true
+          ddev logs -s web --tail 500 < /dev/null || true
 
       - name: Upload test report
         if: always()
