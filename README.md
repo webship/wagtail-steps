@@ -46,7 +46,7 @@ must fail; see [The test site](#the-test-site) and [`.github/workflows/test.yml`
 
 ## From nothing to a green run
 
-What the machine needs: Docker, [DDEV](https://ddev.com), git, Python 3, curl, and Node.js 20 or later with npm. The
+What the machine needs: Docker, [DDEV](https://ddev.com), git, Python 3, curl, and Node.js 24 or later with npm. The
 site is installed and run in its containers, with the Python of its web image: no Python packages on the machine, no
 public domain and no account anywhere.
 
@@ -246,7 +246,7 @@ field, embeds, the API, and admin languages other than English (the steps read t
 
 ## Requirements
 
-- Node.js 20 or later
+- Node.js 24 or later
 - A webship-js 2.0 test project (webship-js 2.0.16 or later)
 - A Wagtail site (the steps hold on Wagtail 8.1 and on the long-term-support Wagtail 7.4), its accounts for the
   suite, and a mail catcher for the mail steps
