@@ -1,6 +1,6 @@
 {
   "name": "@webship-js/wagtail-steps",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Cucumber step definitions for Wagtail sites, a plugin for webship-js (Playwright and Cucumber): the admin login and the dashboard, the page explorer (the tree, search, a child page added), page editing (StreamField blocks added, moved and removed, the preview panel, save draft, publish, unpublish, schedule), revisions (compare, revert) and page locking, the moderation workflow (submit, approve, request changes with a comment), the image and document libraries (upload, focal point, collections), snippets, form submissions, users and groups, redirects and reports, and the front end of the site: its pages, its search and its forms.",
   "main": "tests/step-definitions/wagtail-session.steps.js",
   "files": [
